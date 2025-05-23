@@ -1,11 +1,14 @@
 package com.UTP.Certificado.model;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import org.springframework.data.annotation.Id;
+//import org.springframework.data.annotation.Id; esta importanción no es valida para entidades JPA xd
+import jakarta.persistence.Id; // ✅ CORRECTA para JPA (Hibernate)
 
 import java.time.LocalDate;
 
+@Entity
 public class Certificado {
 
     @Id
