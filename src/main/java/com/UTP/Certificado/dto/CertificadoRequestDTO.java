@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class CertificadoRequestDTO {
 
     private String nombreEstudiante;
+    private String codigo;
     private String curso;
     private Double nota;
     private LocalDate fechaEmision;
@@ -17,6 +18,14 @@ public class CertificadoRequestDTO {
 
     public void setNombreEstudiante(String nombreEstudiante) {
         this.nombreEstudiante = nombreEstudiante;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getCurso() {
