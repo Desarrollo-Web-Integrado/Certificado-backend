@@ -17,6 +17,7 @@ public class CertificadoService {
     public Certificado crearCertificado(CertificadoRequestDTO dto) {
         Certificado certificado = new Certificado();
         certificado.setNombreEstudiante(dto.getNombreEstudiante());
+        certificado.setCodigo(dto.getCodigo());
         certificado.setCurso(dto.getCurso());
         certificado.setNota(dto.getNota());
         certificado.setFechaEmision(dto.getFechaEmision());
