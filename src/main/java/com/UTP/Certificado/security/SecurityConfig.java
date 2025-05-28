@@ -19,6 +19,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() //IMPORTANTE permite el libre acceso a las rutas
+                        .requestMatchers("/api/certificados/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic().disable() // si no se usa  autenticación básica
