@@ -37,6 +37,15 @@ public class PdfGeneratorService {
             documento.add(new Paragraph("Fecha de Emisión: " + certificado.getFechaEmision(), textoFont));
             documento.add(new Paragraph("Código de Verificación: " + certificado.getCodigoVerificacion(), textoFont));
 
+            documento.add(new Paragraph("\nDescripción:", textoFont));
+            documento.add(new Paragraph(certificado.getDescripcion(), textoFont));
+
+            documento.add(new Paragraph("\nHabilidades obtenidas:", textoFont));
+            for (String habilidad : certificado.getHabilidades()) {
+                documento.add(new Paragraph("- " + habilidad, textoFont));
+            }
+
+
             documento.close();
             return out.toByteArray();
 
