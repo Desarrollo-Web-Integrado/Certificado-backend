@@ -46,4 +46,31 @@ public class CertificadoController {
                 .body(pdfBytes);
     }
 
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarCertificado(@PathVariable Long id) {
+        certificadoRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Certificado> actualizarCertificado(@PathVariable Long id, @RequestBody CertificadoRequestDTO dto) {
+        Certificado certificadoExistente = certificadoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Certificado no encontrado"));
+
+        certificadoExistente.setNombreEstudiante(dto.getNombreEstudiante());
+        certificadoExistente.setCurso(dto.getCurso());
+        certificadoExistente.setNota(dto.getNota());
+        certificadoExistente.setFechaEmision(dto.getFechaEmision());
+        certificadoExistente.setDescripcion(dto.getDescripcion());
+        certificadoExistente.setHabilidades(dto.getHabilidades());
+
+        certificadoRepository.save(certificadoExistente);
+
+        return ResponseEntity.ok(certificadoExistente);
+    }
+
+
+
 }
