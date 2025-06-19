@@ -73,4 +73,10 @@ public class CertificadoController {
 
 
 
+    @GetMapping("/{codigoVerificacion}")
+    public ResponseEntity<Certificado> buscarPorCodigoVerificacion(@PathVariable String codigoVerificacion) {
+        return certificadoRepository.findByCodigoVerificacion(codigoVerificacion)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
