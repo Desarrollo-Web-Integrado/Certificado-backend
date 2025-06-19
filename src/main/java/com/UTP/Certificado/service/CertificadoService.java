@@ -20,6 +20,9 @@ public class CertificadoService {
         certificado.setCodigo(dto.getCodigo());
         certificado.setCurso(dto.getCurso());
         certificado.setNota(dto.getNota());
+        // NUEVOS CAMPOS
+        certificado.setDescripcion(dto.getDescripcion());
+        certificado.setHabilidades(dto.getHabilidades());
         certificado.setFechaEmision(dto.getFechaEmision());
         certificado.setCodigoVerificacion(generarCodigoUnico());
 
