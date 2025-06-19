@@ -1,6 +1,7 @@
 package com.UTP.Certificado.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class CertificadoRequestDTO {
 
@@ -10,7 +11,28 @@ public class CertificadoRequestDTO {
     private Double nota;
     private LocalDate fechaEmision;
 
+    //NUEVOS CAMPOS
+    private List<String> habilidades;
+    private String descripcion;
+
     //getters y setters
+
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public List<String> getHabilidades() {
+        return habilidades;
+    }
+
+    public void setHabilidades(List<String> habilidades) {
+        this.habilidades = habilidades;
+    }
 
     public String getNombreEstudiante() {
         return nombreEstudiante;
