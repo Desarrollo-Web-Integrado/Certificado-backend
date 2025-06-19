@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -56,6 +58,26 @@ public class AuthController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+
+    //Buscar todos los usuarios
+    @GetMapping
+    public ResponseEntity<List<Usuario>> obtenerTodosLosUsuarios() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        return ResponseEntity.ok(usuarios);
+    }
+
+
+    //Buscar usuario por id
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return ResponseEntity.ok(usuario);
+    }
+
+
+
+
 
     // Buscar usuario por correo (GET) (esto luego se cambiara a una clase especifica para estos casos)
     @GetMapping("/buscar")
