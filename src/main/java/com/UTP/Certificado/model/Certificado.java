@@ -1,12 +1,10 @@
 package com.UTP.Certificado.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 //import org.springframework.data.annotation.Id; esta importanción no es valida para entidades JPA xd
-import jakarta.persistence.Id; // ✅ CORRECTA para JPA (Hibernate)
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Certificado {
@@ -20,10 +18,32 @@ public class Certificado {
     private String curso;
     private Double nota;
     private LocalDate fechaEmision;
-
     private String codigoVerificacion; // Código único o para QR
 
+    // NUEVOS CAMPOS
+    @ElementCollection
+    private List<String> habilidades;
+    private String descripcion;
+
+
     // Getters y setters
+
+
+    public List<String> getHabilidades() {
+        return habilidades;
+    }
+
+    public void setHabilidades(List<String> habilidades) {
+        this.habilidades = habilidades;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
     public Long getId() {
         return id;
