@@ -3,6 +3,7 @@ package com.UTP.Certificado.controller;
 
 import com.UTP.Certificado.dto.CertificadoRequestDTO;
 import com.UTP.Certificado.model.Certificado;
+import com.UTP.Certificado.model.Usuario;
 import com.UTP.Certificado.repository.CertificadoRepository;
 import com.UTP.Certificado.service.CertificadoService;
 import com.UTP.Certificado.service.PdfGeneratorService;
@@ -23,15 +24,11 @@ public class CertificadoController {
     @Autowired
     private CertificadoRepository certificadoRepository;
 
-
-
-
     @PostMapping
     public ResponseEntity<Certificado> crearCertificado(@RequestBody CertificadoRequestDTO dto) {
         Certificado nuevoCertificado = certificadoService.crearCertificado(dto);
         return ResponseEntity.ok(nuevoCertificado);
     }
-
 
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> descargarCertificadoPdf(@PathVariable Long id) {
@@ -46,4 +43,10 @@ public class CertificadoController {
                 .body(pdfBytes);
     }
 
+    @GetMapping("/{codigoVerificacion}")
+    public ResponseEntity<Certificado> buscarPorCodigoVerificacion(@PathVariable String codigoVerificacion) {
+        return certificadoRepository.findByCodigoVerificacion(codigoVerificacion)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
