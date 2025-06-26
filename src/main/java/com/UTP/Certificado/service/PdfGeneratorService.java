@@ -3,6 +3,7 @@ package com.UTP.Certificado.service;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import com.UTP.Certificado.model.Certificado;
+import com.UTP.Certificado.model.Usuario;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -29,9 +30,14 @@ public class PdfGeneratorService {
 
             documento.add(new Paragraph("\n"));
 
-            // Contenido
-            documento.add(new Paragraph("Nombre del Estudiante: " + certificado.getNombreEstudiante(), textoFont));
-            documento.add(new Paragraph("Codigo: " + certificado.getCodigo(), textoFont));
+            // Obtener estudiante
+            Usuario estudiante = certificado.getEstudiante();
+
+            // Contenido dinámico desde la relación
+            documento.add(new Paragraph("Nombre del Estudiante: " + estudiante.getNombre() + " " + estudiante.getApellido(), textoFont));
+            documento.add(new Paragraph("Correo del Estudiante: " + estudiante.getCorreo(), textoFont));
+
+
             documento.add(new Paragraph("Curso: " + certificado.getCurso(), textoFont));
             documento.add(new Paragraph("Nota Final: " + certificado.getNota(), textoFont));
             documento.add(new Paragraph("Fecha de Emisión: " + certificado.getFechaEmision(), textoFont));
@@ -45,7 +51,6 @@ public class PdfGeneratorService {
                 documento.add(new Paragraph("- " + habilidad, textoFont));
             }
 
-
             documento.close();
             return out.toByteArray();
 
@@ -54,3 +59,4 @@ public class PdfGeneratorService {
         }
     }
 }
+
