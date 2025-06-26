@@ -3,13 +3,16 @@ package com.UTP.Certificado.controller;
 
 import com.UTP.Certificado.dto.CertificadoRequestDTO;
 import com.UTP.Certificado.model.Certificado;
+import com.UTP.Certificado.model.Usuario;
 import com.UTP.Certificado.repository.CertificadoRepository;
+import com.UTP.Certificado.repository.UsuarioRepository;
 import com.UTP.Certificado.service.CertificadoService;
 import com.UTP.Certificado.service.PdfGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -25,16 +28,17 @@ public class CertificadoController {
     @Autowired
     private CertificadoRepository certificadoRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-
-
+    //  Crear nuevo certificado
     @PostMapping
     public ResponseEntity<Certificado> crearCertificado(@RequestBody CertificadoRequestDTO dto) {
         Certificado nuevoCertificado = certificadoService.crearCertificado(dto);
         return ResponseEntity.ok(nuevoCertificado);
     }
 
-
+    //  Descargar PDF del certificado
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> descargarCertificadoPdf(@PathVariable Long id) {
         Certificado certificado = certificadoRepository.findById(id)
@@ -48,14 +52,15 @@ public class CertificadoController {
                 .body(pdfBytes);
     }
 
+    //  Obtener certificado por ID
     @GetMapping("/{id}")
     public ResponseEntity<Certificado> getCertificadoById(@PathVariable Long id) {
-        Certificado certificado = certificadoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Certificado no encontrado"));
-        return ResponseEntity.ok(certificado);
+        return certificadoRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-
+    //  Buscar por código de verificación (ej. para escanear QR)
     @GetMapping("/codigo/{codigoVerificacion}")
     public ResponseEntity<Certificado> buscarPorCodigoVerificacion(@PathVariable String codigoVerificacion) {
         return certificadoRepository.findByCodigoVerificacion(codigoVerificacion)
@@ -63,37 +68,44 @@ public class CertificadoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
+    //  Obtener todos los certificados (admin)
     @GetMapping
     public ResponseEntity<List<Certificado>> getAllCertificados() {
-        List<Certificado> certificados = certificadoRepository.findAll();
-        return ResponseEntity.ok(certificados);
+        return ResponseEntity.ok(certificadoRepository.findAll());
     }
 
-
-
+    //  Eliminar un certificado
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarCertificado(@PathVariable Long id) {
+        if (!certificadoRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         certificadoRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-
+    //  Actualizar certificado
     @PutMapping("/{id}")
-    public ResponseEntity<Certificado> actualizarCertificado(@PathVariable Long id, @RequestBody CertificadoRequestDTO dto) {
+    public ResponseEntity<Certificado> actualizarCertificado(
+            @PathVariable Long id,
+            @RequestBody CertificadoRequestDTO dto) {
+
         Certificado certificadoExistente = certificadoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Certificado no encontrado"));
 
-        certificadoExistente.setNombreEstudiante(dto.getNombreEstudiante());
+        Usuario estudiante = usuarioRepository.findByCorreo(dto.getCorreo())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con correo: " + dto.getCorreo()));
+
+
+        certificadoExistente.setEstudiante(estudiante);
         certificadoExistente.setCurso(dto.getCurso());
         certificadoExistente.setNota(dto.getNota());
-        certificadoExistente.setFechaEmision(dto.getFechaEmision());
+        certificadoExistente.setFechaEmision(
+                dto.getFechaEmision() != null ? dto.getFechaEmision() : LocalDate.now()
+        );
         certificadoExistente.setDescripcion(dto.getDescripcion());
         certificadoExistente.setHabilidades(dto.getHabilidades());
 
-        certificadoRepository.save(certificadoExistente);
-
-        return ResponseEntity.ok(certificadoExistente);
+        return ResponseEntity.ok(certificadoRepository.save(certificadoExistente));
     }
-
 }
