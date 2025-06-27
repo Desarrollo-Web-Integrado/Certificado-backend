@@ -1,5 +1,6 @@
 package com.UTP.Certificado.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,15 +8,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
-public class CertificadoRequestDTO {
+public class CertificadoPublicoDTO {
 
-    private String correo; // ✅ Buscar al estudiante por su correo único
-
+    private String nombreCompleto;
     private String curso;
     private Double nota;
-    private LocalDate fechaEmision;
-
-    private List<String> habilidades;
     private String descripcion;
+    private List<String> habilidades;
+    private LocalDate fechaEmision;
 }

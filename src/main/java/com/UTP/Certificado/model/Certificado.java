@@ -1,105 +1,38 @@
 package com.UTP.Certificado.model;
 
-import jakarta.persistence.*;
 //import org.springframework.data.annotation.Id; esta importanción no es valida para entidades JPA xd
+
+
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@Data
+@NoArgsConstructor
 public class Certificado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombreEstudiante;
-    private String codigo;
     private String curso;
     private Double nota;
     private LocalDate fechaEmision;
-    private String codigoVerificacion; // Código único o para QR
+    private String codigoVerificacion;
 
-    // NUEVOS CAMPOS
     @ElementCollection
     private List<String> habilidades;
+
     private String descripcion;
 
-
-    // Getters y setters
-
-
-    public List<String> getHabilidades() {
-        return habilidades;
-    }
-
-    public void setHabilidades(List<String> habilidades) {
-        this.habilidades = habilidades;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombreEstudiante() {
-        return nombreEstudiante;
-    }
-
-    public void setNombreEstudiante(String nombreEstudiante) {
-        this.nombreEstudiante = nombreEstudiante;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getCurso() {
-        return curso;
-    }
-
-    public void setCurso(String curso) {
-        this.curso = curso;
-    }
-
-    public Double getNota() {
-        return nota;
-    }
-
-    public void setNota(Double nota) {
-        this.nota = nota;
-    }
-
-    public LocalDate getFechaEmision() {
-        return fechaEmision;
-    }
-
-    public void setFechaEmision(LocalDate fechaEmision) {
-        this.fechaEmision = fechaEmision;
-    }
-
-    public String getCodigoVerificacion() {
-        return codigoVerificacion;
-    }
-
-    public void setCodigoVerificacion(String codigoVerificacion) {
-        this.codigoVerificacion = codigoVerificacion;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "estudiante_id", nullable = false)
+    private Usuario estudiante;
 }
 
 //aca recalco la duda si la 2do importacion de la persistencia fue la correcta o la 1era era la idonea, los errores futuros lo diran

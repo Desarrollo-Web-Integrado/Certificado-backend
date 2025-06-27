@@ -2,6 +2,7 @@ package com.UTP.Certificado.controller;
 
 import com.UTP.Certificado.dto.LoginDTO;
 import com.UTP.Certificado.dto.RegisterDTO;
+import com.UTP.Certificado.dto.UsuarioResponseDTO;
 import com.UTP.Certificado.model.Usuario;
 import com.UTP.Certificado.repository.UsuarioRepository;
 import com.UTP.Certificado.service.UsuarioService;
@@ -17,10 +18,10 @@ import java.util.List;
 public class AuthController {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
     @Autowired
-    private UsuarioService usuarioService;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -59,31 +60,33 @@ public class AuthController {
         }
     }
 
-    //Buscar todos los usuarios
+    // Obtener todos los usuarios
     @GetMapping
     public ResponseEntity<List<Usuario>> obtenerTodosLosUsuarios() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
-        return ResponseEntity.ok(usuarios);
+        return ResponseEntity.ok(usuarioRepository.findAll());
     }
 
-
-    //Buscar usuario por id
+    // Obtener usuario por ID
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return ResponseEntity.ok(usuario);
+        return usuarioRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-
-
-
-
-    // Buscar usuario por correo (GET) (esto luego se cambiara a una clase especifica para estos casos)
+    //buscar usuario por correo
     @GetMapping("/buscar")
-    public ResponseEntity<Usuario> buscarPorCorreo(@RequestParam String correo) {
+    public ResponseEntity<UsuarioResponseDTO> buscarPorCorreo(@RequestParam String correo) {
         return usuarioRepository.findByCorreo(correo)
-                .map(ResponseEntity::ok)
+                .map(usuario -> {
+                    UsuarioResponseDTO dto = new UsuarioResponseDTO(
+                            usuario.getId(),
+                            usuario.getNombre(),
+                            usuario.getApellido(),
+                            usuario.getCorreo()
+                    );
+                    return ResponseEntity.ok(dto);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }
