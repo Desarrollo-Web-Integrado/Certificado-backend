@@ -2,6 +2,7 @@ package com.UTP.Certificado.controller;
 
 import com.UTP.Certificado.dto.LoginDTO;
 import com.UTP.Certificado.dto.RegisterDTO;
+import com.UTP.Certificado.dto.UsuarioResponseDTO;
 import com.UTP.Certificado.model.Usuario;
 import com.UTP.Certificado.repository.UsuarioRepository;
 import com.UTP.Certificado.service.UsuarioService;
@@ -73,11 +74,19 @@ public class AuthController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Obtener usuario por correo
+    //buscar usuario por correo
     @GetMapping("/buscar")
-    public ResponseEntity<Usuario> buscarPorCorreo(@RequestParam String correo) {
+    public ResponseEntity<UsuarioResponseDTO> buscarPorCorreo(@RequestParam String correo) {
         return usuarioRepository.findByCorreo(correo)
-                .map(ResponseEntity::ok)
+                .map(usuario -> {
+                    UsuarioResponseDTO dto = new UsuarioResponseDTO(
+                            usuario.getId(),
+                            usuario.getNombre(),
+                            usuario.getApellido(),
+                            usuario.getCorreo()
+                    );
+                    return ResponseEntity.ok(dto);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }
