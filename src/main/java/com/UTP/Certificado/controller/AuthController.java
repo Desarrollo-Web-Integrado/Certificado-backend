@@ -1,8 +1,10 @@
 package com.UTP.Certificado.controller;
 
 import com.UTP.Certificado.dto.LoginDTO;
+import com.UTP.Certificado.dto.LoginResponseDTO;
 import com.UTP.Certificado.dto.RegisterDTO;
 import com.UTP.Certificado.dto.UsuarioResponseDTO;
+import com.UTP.Certificado.model.Rol;
 import com.UTP.Certificado.model.Usuario;
 import com.UTP.Certificado.repository.UsuarioRepository;
 import com.UTP.Certificado.service.UsuarioService;
@@ -46,12 +48,16 @@ public class AuthController {
 
     // Login de usuario
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginDTO dto) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginDTO dto) {
         try {
             Usuario usuario = usuarioService.obtenerPorCorreo(dto.getCorreo());
 
             if (passwordEncoder.matches(dto.getClave(), usuario.getClave())) {
-                return ResponseEntity.ok("Login exitoso.");
+                LoginResponseDTO response = new LoginResponseDTO(
+                        usuario.getCorreo(),
+                        usuario.getRol()
+                );
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.status(401).body("Clave incorrecta.");
             }
@@ -59,6 +65,7 @@ public class AuthController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+
 
     // Obtener todos los usuarios
     @GetMapping
@@ -73,6 +80,40 @@ public class AuthController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+
+    // Obtener todos los usuarios con rol USER
+    @GetMapping("/user")
+    public ResponseEntity<List<UsuarioResponseDTO>> obtenerUsuariosConRolUser() {
+        List<Usuario> usuariosUser = usuarioRepository.findByRol(Rol.USER);
+
+        List<UsuarioResponseDTO> dtos = usuariosUser.stream()
+                .map(usuario -> new UsuarioResponseDTO(
+                        usuario.getId(),
+                        usuario.getNombre(),
+                        usuario.getApellido(),
+                        usuario.getCorreo()
+                )).toList();
+
+        return ResponseEntity.ok(dtos);
+    }
+
+    // Obtener todos los usuarios con rol ADMINISTRADOR
+    @GetMapping("/administrador")
+    public ResponseEntity<List<UsuarioResponseDTO>> obtenerUsuariosConRolAdministrador() {
+        List<Usuario> usuariosUser = usuarioRepository.findByRol(Rol.ADMINISTRADOR);
+
+        List<UsuarioResponseDTO> dtos = usuariosUser.stream()
+                .map(usuario -> new UsuarioResponseDTO(
+                        usuario.getId(),
+                        usuario.getNombre(),
+                        usuario.getApellido(),
+                        usuario.getCorreo()
+                )).toList();
+
+        return ResponseEntity.ok(dtos);
+    }
+
 
     //buscar usuario por correo
     @GetMapping("/buscar")
