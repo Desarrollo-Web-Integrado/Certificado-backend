@@ -31,7 +31,6 @@ public class PdfGeneratorService {
 
             // Contenido
             documento.add(new Paragraph("Nombre del Estudiante: " + certificado.getNombreEstudiante(), textoFont));
-            documento.add(new Paragraph("Codigo: " + certificado.getCodigo(), textoFont));
             documento.add(new Paragraph("Curso: " + certificado.getCurso(), textoFont));
             documento.add(new Paragraph("Nota Final: " + certificado.getNota(), textoFont));
             documento.add(new Paragraph("Fecha de Emisión: " + certificado.getFechaEmision(), textoFont));
