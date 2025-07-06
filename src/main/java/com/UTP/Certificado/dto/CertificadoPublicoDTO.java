@@ -18,4 +18,5 @@ public class CertificadoPublicoDTO {
     private String descripcion;
     private List<String> habilidades;
     private LocalDate fechaEmision;
+    private String codigoVerificacion;
 }
