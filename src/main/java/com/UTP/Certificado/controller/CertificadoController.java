@@ -83,7 +83,8 @@ public class CertificadoController {
                         certificado.getNota(),
                         certificado.getDescripcion(),
                         certificado.getHabilidades(),
-                        certificado.getFechaEmision()
+                        certificado.getFechaEmision(),
+                        certificado.getCodigoVerificacion()
                 )).toList();
 
         return ResponseEntity.ok(dtos);
@@ -106,7 +107,8 @@ public class CertificadoController {
                             certificado.getNota(),
                             certificado.getDescripcion(),
                             certificado.getHabilidades(),
-                            certificado.getFechaEmision()
+                            certificado.getFechaEmision(),
+                            certificado.getCodigoVerificacion()
                     );
                     return ResponseEntity.ok(dto);
                 })
