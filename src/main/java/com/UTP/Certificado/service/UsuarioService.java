@@ -21,15 +21,12 @@ public class UsuarioService {
      * Registra un nuevo usuario si el correo no está en uso.
      */
     public Usuario registrarUsuario(Usuario usuario) {
-        Optional<Usuario> existente = usuarioRepository.findByCorreo(usuario.getCorreo());
-
-        if (existente.isPresent()) {
+        if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
             throw new IllegalArgumentException("Ya existe un usuario con ese correo.");
         }
 
         // Encriptar la clave antes de guardar
-        String claveEncriptada = passwordEncoder.encode(usuario.getClave());
-        usuario.setClave(claveEncriptada);
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
 
         return usuarioRepository.save(usuario);
     }
