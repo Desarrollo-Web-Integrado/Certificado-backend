@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CertificadoPublicoDTO {
 
+    private Long id;
     private String nombreCompleto;
     private String curso;
     private Double nota;
