@@ -78,6 +78,7 @@ public class CertificadoController {
 
         List<CertificadoPublicoDTO> dtos = certificados.stream()
                 .map(certificado -> new CertificadoPublicoDTO(
+                        certificado.getId(),
                         certificado.getEstudiante().getNombre() + " " + certificado.getEstudiante().getApellido(),
                         certificado.getCurso(),
                         certificado.getNota(),
@@ -102,6 +103,7 @@ public class CertificadoController {
         return certificadoRepository.findByCodigoVerificacion(codigoVerificacion)
                 .map(certificado -> {
                     CertificadoPublicoDTO dto = new CertificadoPublicoDTO(
+                            certificado.getId(),
                             certificado.getEstudiante().getNombre() + " " + certificado.getEstudiante().getApellido(),
                             certificado.getCurso(),
                             certificado.getNota(),
