@@ -9,6 +9,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 import com.UTP.Certificado.model.Certificado;
 import com.UTP.Certificado.model.Usuario;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -18,8 +19,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+
+
+
+
 @Service
 public class PdfGeneratorService {
+
+    // 🔗 Se inyecta la URL base del frontend desde application.properties
+    @Value("${app.frontend.url}")
+    private String baseUrl;
 
     private Image generarCodigoQR(String texto) throws WriterException, IOException, BadElementException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
@@ -84,7 +93,7 @@ public class PdfGeneratorService {
             documento.add(new Paragraph("📚 Curso: " + certificado.getCurso(), textoFont));
             documento.add(new Paragraph("📝 Nota Final: " + certificado.getNota(), textoFont));
             documento.add(new Paragraph("📅 Fecha de Emisión: " + certificado.getFechaEmision(), textoFont));
-            documento.add(new Paragraph("🔐 Código de Verificación: " + certificado.getCodigoVerificacion(), textoFont));
+
 
             documento.add(Chunk.NEWLINE);
 
@@ -102,16 +111,21 @@ public class PdfGeneratorService {
 
 
 
-            // 👽 Agregar código QR
+            // 👽 Agregar código QR *url configurable en application.properties
             documento.add(new Paragraph("🔍 Verifica este certificado escaneando el código QR:", textoFont));
-            Image qrImage = generarCodigoQR("http://localhost:8080/api/certificados/codigo/" + certificado.getCodigoVerificacion());
+
+
+            String qrUrl = baseUrl + "/verification/certificado/?link=" + certificado.getCodigoVerificacion();
+            Image qrImage = generarCodigoQR(qrUrl);
+
+
             qrImage.setAlignment(Element.ALIGN_CENTER);
-            qrImage.scaleToFit(120, 120); //tamaño del QR
+            qrImage.scaleToFit(140, 140); //tamaño del QR
             documento.add(qrImage);
 
 
 
-            // Firma (opcional)
+            // Firma
             try {
                 Image firma = cargarImagenDesdeRecursos("firma.png");
                 firma.scaleToFit(100, 50);
